@@ -9,7 +9,10 @@
     "lint": "eslint",
     "format": "prettier --write \"**/*.{ts,tsx}\"",
     "typecheck": "tsc --noEmit",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "doppler:run": "doppler run -- vite",
+    "doppler:pull": "doppler secrets download --no-file --format env-no-quotes > .env.local",
+    "doppler:debug": "doppler run -- node --inspect node_modules/.bin/vite"
   },
   "dependencies": {
     "@phosphor-icons/react": "^2.1.10",
