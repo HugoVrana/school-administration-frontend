@@ -8,12 +8,10 @@ type Step = "details" | "verify"
 
 export function RegisterPage() {
   const { isLoaded, isSignedIn } = useAuth()
-  const { signUp, setActive } = useSignUp()
+  const { signUp } = useSignUp()
   const navigate = useNavigate()
 
   const [step, setStep] = useState<Step>("details")
-  const [firstName, setFirstName] = useState("")
-  const [lastName, setLastName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [code, setCode] = useState("")
@@ -25,43 +23,55 @@ export function RegisterPage() {
 
   async function handleRegister(e: React.FormEvent) {
     e.preventDefault()
-    if (!signUp) return
 
     setLoading(true)
     setError(null)
 
-    try {
-      await signUp.create({ firstName, lastName, emailAddress: email, password })
-      await signUp.prepareEmailAddressVerification({ strategy: "email_code" })
-      setStep("verify")
-    } catch (err: unknown) {
-      const clerkError = err as { errors?: { message: string }[] }
-      setError(clerkError.errors?.[0]?.message ?? "Something went wrong")
-    } finally {
+    const { error: registerError } = await signUp.password({
+      emailAddress: email,
+      password: password
+    })
+    if (registerError) {
+      console.error("error occurred");
+      console.error(registerError);
+      setError(registerError.message);
       setLoading(false)
+      return
     }
+
+    const { error: sendError } = await signUp.verifications.sendEmailCode()
+    if (sendError) {
+      setError(sendError.message)
+      setLoading(false)
+      return
+    }
+
+    setStep("verify")
+    setLoading(false)
   }
 
   async function handleVerify(e: React.FormEvent) {
     e.preventDefault()
-    if (!signUp) return
 
     setLoading(true)
     setError(null)
 
-    try {
-      const result = await signUp.attemptEmailAddressVerification({ code })
 
-      if (result.status === "complete") {
-        await setActive({ session: result.createdSessionId })
-        navigate("/")
-      }
-    } catch (err: unknown) {
-      const clerkError = err as { errors?: { message: string }[] }
-      setError(clerkError.errors?.[0]?.message ?? "Invalid code")
-    } finally {
+    const { error: verifyError } = await signUp.verifications.verifyEmailCode({code})
+    if (verifyError) {
+      setError(verifyError.message)
       setLoading(false)
+      return
     }
+
+    const { error: finalizeError } = await signUp.finalize()
+    if (finalizeError) {
+      setError(finalizeError.message)
+      setLoading(false)
+      return
+    }
+
+    navigate("/")
   }
 
   return (
@@ -77,22 +87,6 @@ export function RegisterPage() {
             </div>
 
             <form onSubmit={handleRegister} className="space-y-3">
-              <div className="flex gap-2">
-                <Input
-                  placeholder="First name"
-                  value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
-                  required
-                  autoComplete="given-name"
-                />
-                <Input
-                  placeholder="Last name"
-                  value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
-                  required
-                  autoComplete="family-name"
-                />
-              </div>
               <Input
                 type="email"
                 placeholder="Email"

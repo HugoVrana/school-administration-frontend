@@ -6,7 +6,7 @@ import { Input } from "@workspace/ui/components/base/input"
 
 export function LoginPage() {
   const { isLoaded, isSignedIn } = useAuth()
-  const { signIn, setActive } = useSignIn()
+  const { signIn } = useSignIn()
   const navigate = useNavigate()
 
   const [email, setEmail] = useState("")
@@ -19,27 +19,32 @@ export function LoginPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (!signIn) return
 
     setLoading(true)
     setError(null)
 
-    try {
-      const result = await signIn.create({
-        identifier: email,
-        password,
-      })
-
-      if (result.status === "complete") {
-        await setActive({ session: result.createdSessionId })
-        navigate("/")
-      }
-    } catch (err: unknown) {
-      const clerkError = err as { errors?: { message: string }[] }
-      setError(clerkError.errors?.[0]?.message ?? "Something went wrong")
-    } finally {
+    const { error: createError } = await signIn.create({ identifier: email })
+    if (createError) {
+      setError(createError.message)
       setLoading(false)
+      return
     }
+
+    const { error: passwordError } = await signIn.password({ password })
+    if (passwordError) {
+      setError(passwordError.message)
+      setLoading(false)
+      return
+    }
+
+    const { error: finalizeError } = await signIn.finalize()
+    if (finalizeError) {
+      setError(finalizeError.message)
+      setLoading(false)
+      return
+    }
+
+    navigate("/")
   }
 
   return (
