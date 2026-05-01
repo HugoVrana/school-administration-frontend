@@ -1,0 +1,34 @@
+{
+  "name": "@school/db",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./migrate": "./src/migrate.ts"
+  },
+  "scripts": {
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit",
+    "db:pull-secrets" : "doppler secrets download --no-file --format env-no-quotes > .env.local",
+    "db:migrate": "doppler run -- tsx src/migrate.ts up",
+    "db:rollback": "doppler run -- tsx src/migrate.ts down",
+    "db:reset": "doppler run -- tsx src/migrate.ts reset"
+  },
+  "dependencies": {
+    "kysely": "^0.28.16",
+    "pg": "^8.11.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.2",
+    "@types/pg": "^8.10.0",
+    "eslint": "^9.39.2",
+    "globals": "^17.2.0",
+    "tsx": "^4.0.0",
+    "typescript": "^5.4.0",
+    "typescript-eslint": "^8.54.0"
+  }
+}
+
