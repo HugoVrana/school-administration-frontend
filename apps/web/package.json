@@ -15,10 +15,12 @@
     "doppler:debug": "doppler run -- node --inspect node_modules/.bin/vite"
   },
   "dependencies": {
+    "@clerk/react-router": "^3.1.9",
     "@phosphor-icons/react": "^2.1.10",
     "@workspace/ui": "workspace:*",
     "react": "^19.2.4",
-    "react-dom": "^19.2.4"
+    "react-dom": "^19.2.4",
+    "react-router": "^7.14.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.2",

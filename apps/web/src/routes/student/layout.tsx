@@ -1,0 +1,14 @@
+import { Navigate, Outlet } from "react-router"
+import { useAuth, useUser } from "@clerk/react-router"
+
+export function StudentLayout() {
+  const { isLoaded, isSignedIn } = useAuth()
+  const { user } = useUser()
+
+  if (!isLoaded) return null
+  if (!isSignedIn) return <Navigate to="/login" replace />
+  if (user?.publicMetadata?.role !== "student")
+    return <Navigate to="/" replace />
+
+  return <Outlet />
+}

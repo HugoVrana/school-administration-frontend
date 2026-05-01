@@ -1,14 +1,11 @@
-import { StrictMode } from "react"
 import { createRoot } from "react-dom/client"
-
+import { RouterProvider } from "react-router"
 import "@workspace/ui/globals.css"
-import { App } from "./App.tsx"
-import { ThemeProvider } from "@/components/theme-provider.tsx"
+import { SchoolAdministrationProvider } from "@/components/providers/school-administration-providers.tsx"
+import { router } from "./router.tsx"
 
 createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <ThemeProvider>
-      <App />
-    </ThemeProvider>
-  </StrictMode>
+  <SchoolAdministrationProvider>
+    <RouterProvider router={router} />
+  </SchoolAdministrationProvider>
 )
