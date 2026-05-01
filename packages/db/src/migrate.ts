@@ -2,13 +2,13 @@ import { FileMigrationProvider, Migrator } from 'kysely'
 import * as fs from 'node:fs/promises'
 import * as path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { createDb } from './db.js'
+import { createAdminDb } from './db.js'
 
-const DATABASE_URL : string | undefined = process.env.DATABASE_URL
-if (!DATABASE_URL) throw new Error('DATABASE_URL is not set')
-if (!process.env.PG_CERT) throw new Error('PG_CERT is not set')
+for (const key of ['PG_URL', 'PG_PORT', 'PG_ADMIN_USER', 'PG_ADMIN_PASSWORD', 'PG_DATABASE', 'PG_CERT']) {
+  if (!process.env[key]) throw new Error(`${key} is not set`)
+}
 
-const db = createDb(DATABASE_URL)
+const db = createAdminDb()
 
 const migrator = new Migrator({
   db,
