@@ -1,10 +1,19 @@
+import type { FormEvent } from "react"
 import { useState } from "react"
 import { Link, Navigate, useNavigate } from "react-router"
-import { useSignIn, useAuth } from "@clerk/react-router"
+import { useAuth, useSignIn } from "@clerk/react-router"
 import { Button } from "@workspace/ui/components/base/button"
 import { Input } from "@workspace/ui/components/base/input"
 
-export function LoginPage() {
+export type LoginPageProps = {
+  afterSignInPath?: string
+  registerPath?: string
+}
+
+export function LoginPage({
+  afterSignInPath = "/",
+  registerPath = "/register",
+}: LoginPageProps) {
   const { isLoaded, isSignedIn } = useAuth()
   const { signIn } = useSignIn()
   const navigate = useNavigate()
@@ -15,9 +24,9 @@ export function LoginPage() {
   const [loading, setLoading] = useState(false)
 
   if (!isLoaded) return null
-  if (isSignedIn) return <Navigate to="/" replace />
+  if (isSignedIn) return <Navigate to={afterSignInPath} replace />
 
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: FormEvent) {
     e.preventDefault()
 
     setLoading(true)
@@ -44,7 +53,7 @@ export function LoginPage() {
       return
     }
 
-    navigate("/")
+    navigate(afterSignInPath)
   }
 
   return (
@@ -80,13 +89,16 @@ export function LoginPage() {
           )}
 
           <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? "Signing in…" : "Sign in"}
+            {loading ? "Signing in..." : "Sign in"}
           </Button>
         </form>
 
         <p className="text-center text-sm text-muted-foreground">
           Don't have an account?{" "}
-          <Link to="/register" className="text-foreground underline-offset-4 hover:underline">
+          <Link
+            to={registerPath}
+            className="text-foreground underline-offset-4 hover:underline"
+          >
             Register
           </Link>
         </p>

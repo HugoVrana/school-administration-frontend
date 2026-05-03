@@ -1,12 +1,21 @@
+import type { FormEvent } from "react"
 import { useState } from "react"
 import { Link, Navigate, useNavigate } from "react-router"
-import { useSignUp, useAuth } from "@clerk/react-router"
+import { useAuth, useSignUp } from "@clerk/react-router"
 import { Button } from "@workspace/ui/components/base/button"
 import { Input } from "@workspace/ui/components/base/input"
 
 type Step = "details" | "verify"
 
-export function RegisterPage() {
+export type RegisterPageProps = {
+  afterRegisterPath?: string
+  loginPath?: string
+}
+
+export function RegisterPage({
+  afterRegisterPath = "/",
+  loginPath = "/login",
+}: RegisterPageProps) {
   const { isLoaded, isSignedIn } = useAuth()
   const { signUp } = useSignUp()
   const navigate = useNavigate()
@@ -19,9 +28,9 @@ export function RegisterPage() {
   const [loading, setLoading] = useState(false)
 
   if (!isLoaded) return null
-  if (isSignedIn) return <Navigate to="/" replace />
+  if (isSignedIn) return <Navigate to={afterRegisterPath} replace />
 
-  async function handleRegister(e: React.FormEvent) {
+  async function handleRegister(e: FormEvent) {
     e.preventDefault()
 
     setLoading(true)
@@ -29,12 +38,10 @@ export function RegisterPage() {
 
     const { error: registerError } = await signUp.password({
       emailAddress: email,
-      password: password
+      password,
     })
     if (registerError) {
-      console.error("error occurred");
-      console.error(registerError);
-      setError(registerError.message);
+      setError(registerError.message)
       setLoading(false)
       return
     }
@@ -50,14 +57,15 @@ export function RegisterPage() {
     setLoading(false)
   }
 
-  async function handleVerify(e: React.FormEvent) {
+  async function handleVerify(e: FormEvent) {
     e.preventDefault()
 
     setLoading(true)
     setError(null)
 
-
-    const { error: verifyError } = await signUp.verifications.verifyEmailCode({code})
+    const { error: verifyError } = await signUp.verifications.verifyEmailCode({
+      code,
+    })
     if (verifyError) {
       setError(verifyError.message)
       setLoading(false)
@@ -71,7 +79,7 @@ export function RegisterPage() {
       return
     }
 
-    navigate("/")
+    navigate(afterRegisterPath)
   }
 
   return (
@@ -111,13 +119,16 @@ export function RegisterPage() {
               )}
 
               <Button type="submit" className="w-full" disabled={loading}>
-                {loading ? "Creating account…" : "Create account"}
+                {loading ? "Creating account..." : "Create account"}
               </Button>
             </form>
 
             <p className="text-center text-sm text-muted-foreground">
               Already have an account?{" "}
-              <Link to="/login" className="text-foreground underline-offset-4 hover:underline">
+              <Link
+                to={loginPath}
+                className="text-foreground underline-offset-4 hover:underline"
+              >
                 Sign in
               </Link>
             </p>
@@ -145,13 +156,14 @@ export function RegisterPage() {
               )}
 
               <Button type="submit" className="w-full" disabled={loading}>
-                {loading ? "Verifying…" : "Verify email"}
+                {loading ? "Verifying..." : "Verify email"}
               </Button>
             </form>
 
             <p className="text-center text-sm text-muted-foreground">
               Wrong email?{" "}
               <button
+                type="button"
                 onClick={() => setStep("details")}
                 className="text-foreground underline-offset-4 hover:underline"
               >
