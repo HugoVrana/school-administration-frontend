@@ -1,5 +1,4 @@
 import { createBrowserRouter } from "react-router"
-import { LoginPage, RegisterPage } from "@workspace/auth-ui"
 import { AppLayout } from "./routes/app-layout"
 import { RootRoute } from "./routes/root"
 import { AdminLayout } from "./routes/admin/layout"
@@ -8,6 +7,7 @@ import { TeacherLayout } from "./routes/teacher/layout"
 import { TeacherDashboard } from "@/routes/teacher"
 import { StudentLayout } from "./routes/student/layout"
 import { StudentDashboard } from "@/routes/student"
+import {LoginPage, RegisterPage} from "@workspace/auth-ui";
 
 export const router = createBrowserRouter([
   {
