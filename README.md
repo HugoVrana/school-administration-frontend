@@ -41,3 +41,5 @@ On Vercel, create a second project for the same repository with Root Directory s
 ```txt
 https://{api-project-domain}/api/webhooks/clerk
 ```
+
+Keep the API project's Output Directory set to `public`. The API app includes an empty `public` directory because Vercel still expects one for an API-only project using the Other framework preset.
