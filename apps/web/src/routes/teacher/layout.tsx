@@ -1,5 +1,6 @@
 import { Navigate, Outlet } from "react-router"
 import { useAuth, useUser } from "@clerk/react-router"
+import { getUserRole } from "@/lib/user-role"
 
 export function TeacherLayout() {
   const { isLoaded, isSignedIn } = useAuth()
@@ -7,8 +8,7 @@ export function TeacherLayout() {
 
   if (!isLoaded) return null
   if (!isSignedIn) return <Navigate to="/login" replace />
-  if (user?.publicMetadata?.role !== "teacher")
-    return <Navigate to="/" replace />
+  if (getUserRole(user) !== "teacher") return <Navigate to="/" replace />
 
   return <Outlet />
 }

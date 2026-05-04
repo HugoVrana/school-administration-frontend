@@ -6,6 +6,16 @@ import { Button } from "@workspace/ui/components/base/button"
 import { Input } from "@workspace/ui/components/base/input"
 
 type Step = "details" | "verify"
+type RegisterRole = "admin" | "teacher" | "student"
+
+const roleOptions: Array<{
+  value: RegisterRole
+  label: string
+}> = [
+  { value: "student", label: "Student" },
+  { value: "teacher", label: "Teacher" },
+  { value: "admin", label: "Admin" },
+]
 
 export type RegisterPageProps = {
   afterRegisterPath?: string
@@ -23,6 +33,7 @@ export function RegisterPage({
   const [step, setStep] = useState<Step>("details")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [role, setRole] = useState<RegisterRole>("student")
   const [code, setCode] = useState("")
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
@@ -39,6 +50,9 @@ export function RegisterPage({
     const { error: registerError } = await signUp.password({
       emailAddress: email,
       password,
+      unsafeMetadata: {
+        requestedRole: role,
+      },
     })
     if (registerError) {
       setError(registerError.message)
@@ -113,6 +127,32 @@ export function RegisterPage({
                 autoComplete="new-password"
                 aria-label="Password"
               />
+
+              <fieldset className="space-y-2">
+                <legend className="text-xs font-medium text-muted-foreground">
+                  Role
+                </legend>
+                <div className="grid grid-cols-3 gap-1 rounded-lg border border-border bg-muted/40 p-1">
+                  {roleOptions.map((option) => (
+                    <label
+                      key={option.value}
+                      className="min-w-0 cursor-pointer"
+                    >
+                      <input
+                        type="radio"
+                        name="role"
+                        value={option.value}
+                        checked={role === option.value}
+                        onChange={() => setRole(option.value)}
+                        className="peer sr-only"
+                      />
+                      <span className="flex h-8 items-center justify-center rounded-md px-2 text-xs font-medium text-muted-foreground transition-colors peer-checked:bg-background peer-checked:text-foreground peer-checked:shadow-sm">
+                        {option.label}
+                      </span>
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
 
               <div id="clerk-captcha" />
 

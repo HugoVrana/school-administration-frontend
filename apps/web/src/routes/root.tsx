@@ -1,5 +1,6 @@
 import { Navigate } from "react-router"
 import { useAuth, useUser } from "@clerk/react-router"
+import { getRequestedUserRole, getUserRole } from "@/lib/user-role"
 
 export function RootRoute() {
   const { isLoaded, isSignedIn } = useAuth()
@@ -13,7 +14,8 @@ export function RootRoute() {
     return <Navigate to="/login" replace />
   }
 
-  const role = user?.publicMetadata?.role as string | undefined
+  const role = getUserRole(user)
+  const requestedRole = getRequestedUserRole(user)
 
   if (role === "admin") {
     return <Navigate to="/admin" replace />
@@ -28,10 +30,15 @@ export function RootRoute() {
   }
 
   return (
-    <div className="flex min-h-svh items-center justify-center">
+    <div className="flex min-h-svh flex-col items-center justify-center">
       <p className="text-sm text-muted-foreground">
         Your account is pending role assignment.
       </p>
+      {requestedRole && (
+        <p className="mt-2 text-xs text-muted-foreground">
+          Requested role: <span className="capitalize">{requestedRole}</span>
+        </p>
+      )}
     </div>
   )
 }
