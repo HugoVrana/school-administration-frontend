@@ -1,6 +1,6 @@
 import { ClerkProvider } from "@clerk/react-router"
 import { Outlet } from "react-router"
-import { GlobalLogoutButton } from "@/components/auth/global-logout-button"
+import { GlobalLogoutButton } from "@workspace/auth-ui"
 
 export function AppLayout() {
   return (

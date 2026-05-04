@@ -102,6 +102,7 @@ export function RegisterPage({
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 autoComplete="email"
+                aria-label="Email address"
               />
               <Input
                 type="password"
@@ -110,6 +111,7 @@ export function RegisterPage({
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 autoComplete="new-password"
+                aria-label="Password"
               />
 
               <div id="clerk-captcha" />
@@ -149,6 +151,7 @@ export function RegisterPage({
                 onChange={(e) => setCode(e.target.value)}
                 required
                 autoComplete="one-time-code"
+                aria-label="Verification code"
               />
 
               {error && (
