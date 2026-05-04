@@ -35,3 +35,9 @@ pnpm --filter @school/api dev
 ```
 
 Configure a Clerk webhook for `user.created` and `user.updated`, then set `CLERK_WEBHOOK_SIGNING_SECRET` along with the existing `PG_*` database environment variables for the API app.
+
+On Vercel, create a second project for the same repository with Root Directory set to `apps/api`. Use that API project's domain for Clerk:
+
+```txt
+https://{api-project-domain}/api/webhooks/clerk
+```
