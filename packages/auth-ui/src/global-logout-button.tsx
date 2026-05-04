@@ -1,4 +1,4 @@
-import { SignOut } from "@phosphor-icons/react"
+import { SignOutIcon } from "@phosphor-icons/react"
 import { SignOutButton, useAuth } from "@clerk/react-router"
 import { Button } from "@workspace/ui/components/base/button"
 
@@ -17,7 +17,7 @@ export function GlobalLogoutButton({
     <div className="fixed top-4 right-4 z-50">
       <SignOutButton redirectUrl={redirectUrl}>
         <Button type="button" variant="outline" size="sm" className="shadow-sm">
-          <SignOut data-icon="inline-start" aria-hidden="true" />
+          <SignOutIcon data-icon="inline-start" aria-hidden="true" />
           Log out
         </Button>
       </SignOutButton>
