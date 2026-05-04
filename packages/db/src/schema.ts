@@ -6,10 +6,13 @@ export type UserRole = 'admin' | 'teacher' | 'student'
 
 export interface UserTable {
   id: Generated<number>
+  clerk_id: string | null
   email: string
-  name: string
-  role: UserRole
+  name: string | null
+  role: UserRole | null
+  requested_role: UserRole | null
   created_at: ColumnType<Date, never, never>
+  updated_at: ColumnType<Date, never, Date>
 }
 
 export type User = Selectable<UserTable>

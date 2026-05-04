@@ -19,3 +19,19 @@ To use the components in your app, import them from the `ui` package.
 ```tsx
 import { Button } from "@workspace/ui/components/button";
 ```
+
+## Clerk user sync
+
+The API app exposes a Clerk webhook endpoint that stores registered users in the application database:
+
+```txt
+POST /api/webhooks/clerk
+```
+
+Run it with:
+
+```bash
+pnpm --filter @school/api dev
+```
+
+Configure a Clerk webhook for `user.created` and `user.updated`, then set `CLERK_WEBHOOK_SIGNING_SECRET` along with the existing `PG_*` database environment variables for the API app.
